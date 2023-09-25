@@ -1,0 +1,1 @@
+# tournament-auto-seeder
