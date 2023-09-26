@@ -1,11 +1,13 @@
 import puppeteer, { Page } from "puppeteer-core"
+import { PlayerInfo } from "../types/playerInfo";
+
 import 'dotenv/config'
 
 export default class BrowserController {
   private tournamentLink: string;
   private viewPort = {width: 1920, height: 1080}
   private adminEmail: string = process.env.ADMIN_EMAIL || 'admin_email'
-  protected adminPassword: string = process.env.ADMIN_PASSWORD || 'password';  
+  private adminPassword: string = process.env.ADMIN_PASSWORD || 'password';  
 
   public constructor(link: string) {
     this.tournamentLink = link;
@@ -15,6 +17,7 @@ export default class BrowserController {
     console.log("init system")
 
     const Browser = await puppeteer.launch({
+      headless: false,
       executablePath: "/usr/bin/google-chrome-stable"
     })
 
@@ -31,8 +34,9 @@ export default class BrowserController {
 
       await this.startLogin(page)
     }, 3000)
-
+    
     setTimeout(async () => {
+      await this.findPlayerInTable(page, {nick: 'Ryoran', seed: 10})
       await page.screenshot({path: 'screenshots/screenshot.png'})
       await console.log('complete')
     }, 10000)
@@ -47,6 +51,17 @@ export default class BrowserController {
       await console.log("login complete")
     }catch{
       console.log("Login Fail")
+    }
+  }
+
+  private async findPlayerInTable(page: Page, player: PlayerInfo){
+    try{
+      console.log("finding player")
+      const playerName = await page.$x(`//table//tr//td[contains(text(), ${player.nick})]`)
+      const value = await playerName[4].$$('div input')
+      await value[1].type(player.seed.toString())
+    }catch(error){
+      console.log(error)
     }
   }
 
