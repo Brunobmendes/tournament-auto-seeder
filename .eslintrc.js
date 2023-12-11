@@ -22,5 +22,12 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
+        "@typescript-eslint/strict-boolean-expressions": false,
+        "@typescript-eslint/no-misused-promises": [
+            "error",
+            {
+            "checksVoidReturn": false
+            }
+        ]
     }
 }

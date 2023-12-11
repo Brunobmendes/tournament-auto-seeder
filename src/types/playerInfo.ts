@@ -1,4 +1,4 @@
-export type PlayerInfo = {
-  nick: string,
-  seed: number,
+export interface PlayerInfo {
+  nick: string
+  seed: number
 }
